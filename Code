@@ -1,0 +1,46 @@
+# house_price_predict.py
+# Predicting house prices using a regression model
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# 1. Load the dataset (from Google Sheets export)
+import pandas as pd
+
+df = pd.read_csv("house_data.csv", header=None, quotechar='"')
+
+df = df.iloc[:, 0].str.split(",", expand=True)
+df.columns = df.iloc[0]
+df = df[1:]
+
+df = df.apply(pd.to_numeric)
+
+print(df.head())
+print(df.columns.tolist())
+
+
+# 2. Choose input features (X) and output (y)
+X = df[["Square_Feet", "Bedrooms", "Age"]]
+y = df["Price"]
+
+# 3. Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 4. Train the AI model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# 5. Make predictions
+predictions = model.predict(X_test)
+
+# 6. Show results
+results = pd.DataFrame({
+    "Actual Price": y_test.values,
+    "Predicted Price": predictions
+})
+
+print("\nPrediction Results:")
+print(results)
